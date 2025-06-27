@@ -17,9 +17,11 @@ A specialized React application for managing Cisco CUBE E164 pattern mappings wi
 
 ## 📸 Application Preview
 
-<img src="screenshots/Home.png" alt="Cisco CUBE E164 Pattern Map Dashboard" width="600">
-
-*Main dashboard showing pattern management, configuration file downloads, and built-in Cisco router configuration guide*
+<div align="center">
+  <img src="screenshots/Home.png" alt="Cisco CUBE E164 Pattern Map Dashboard" width="600">
+  <br>
+  <em>Main dashboard showing pattern management, configuration file downloads, and built-in Cisco router configuration guide</em>
+</div>
 
 ## 📸 Screenshots
 
