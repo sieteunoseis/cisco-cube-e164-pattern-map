@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Home, Code, FileText, Calculator, Copy } from "lucide-react";
+import { Home, Code, FileText, Calculator, Copy, Activity } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 
@@ -47,6 +47,13 @@ export default function Component() {
               <Link to="/pattern-generator" className="flex items-center gap-2 hover:text-blue-600 transition-colors text-sm font-medium">
                 <Calculator className="h-4 w-4" />
                 Pattern Generator
+              </Link>
+            </NavigationMenuLink>
+            
+            <NavigationMenuLink asChild>
+              <Link to="/logs" className="flex items-center gap-2 hover:text-blue-600 transition-colors text-sm font-medium">
+                <Activity className="h-4 w-4" />
+                Download Logs
               </Link>
             </NavigationMenuLink>
             

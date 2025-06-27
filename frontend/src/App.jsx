@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Home from "./pages/Home";
 import PatternGenerator from "./pages/PatternGenerator";
+import Logs from "./pages/Logs";
 import ErrorPage from "./pages/Error";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "./components/mode-toggle";
@@ -18,6 +19,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/pattern-generator" element={<PatternGenerator />} />
+              <Route path="/logs" element={<Logs />} />
               <Route path="/error" element={<ErrorPage />} />
             </Routes>
           </main>

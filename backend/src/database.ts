@@ -29,8 +29,9 @@ export class Database {
   }
 
   private initializeSchema(): void {
-    // Initialize only patterns table
+    // Initialize patterns and logs tables
     this.initializePatternsTable();
+    this.initializeLogsTable();
   }
 
 
@@ -122,7 +123,43 @@ export class Database {
     });
   }
 
+  private initializeLogsTable(): void {
+    // Check if logs table exists
+    this.db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='download_logs'", (err, row) => {
+      if (err) {
+        Logger.error('Failed to check logs table existence:', err);
+        throw err;
+      }
 
+      if (!row) {
+        // Logs table doesn't exist, create it
+        this.createLogsTable();
+      } else {
+        Logger.info('Download logs table already exists');
+      }
+    });
+  }
+
+  private createLogsTable(): void {
+    const createTableQuery = `
+      CREATE TABLE download_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        label TEXT NOT NULL,
+        ip_address TEXT NOT NULL,
+        user_agent TEXT,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+        status INTEGER DEFAULT 200
+      )
+    `;
+
+    this.db.run(createTableQuery, (err) => {
+      if (err) {
+        Logger.error('Failed to create download_logs table:', err);
+        throw err;
+      }
+      Logger.info('Download logs table created successfully');
+    });
+  }
 
   getAllConnections(): Promise<ConnectionRecord[]> {
     return new Promise((resolve, reject) => {
@@ -256,6 +293,46 @@ export class Database {
         } else {
           Logger.debug(`Retrieved ${rows ? rows.length : 0} patterns for label: ${label}`);
           resolve((rows as ConnectionRecord[]) || []);
+        }
+      });
+    });
+  }
+
+  logDownload(label: string, ipAddress: string, userAgent?: string, status: number = 200): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const query = `
+        INSERT INTO download_logs (label, ip_address, user_agent, status)
+        VALUES (?, ?, ?, ?)
+      `;
+      
+      this.db.run(query, [label, ipAddress, userAgent || null, status], function(err) {
+        if (err) {
+          Logger.error('Failed to log download:', err);
+          reject(err);
+        } else {
+          Logger.debug(`Logged download for label: ${label} from IP: ${ipAddress}`);
+          resolve();
+        }
+      });
+    });
+  }
+
+  getDownloadLogs(limit: number = 100): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const query = `
+        SELECT id, label, ip_address, user_agent, timestamp, status
+        FROM download_logs
+        ORDER BY timestamp DESC
+        LIMIT ?
+      `;
+      
+      this.db.all(query, [limit], (err, rows) => {
+        if (err) {
+          Logger.error('Failed to fetch download logs:', err);
+          reject(err);
+        } else {
+          Logger.debug(`Retrieved ${rows ? rows.length : 0} download logs`);
+          resolve(rows || []);
         }
       });
     });

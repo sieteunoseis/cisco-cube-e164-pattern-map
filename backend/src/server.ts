@@ -184,8 +184,13 @@ app.get('/api/config-files/:label([a-z0-9_-]+)\\.cfg', asyncHandler(async (req: 
   const patterns = await database.getPatternsByLabel(label);
   
   if (patterns.length === 0) {
+    // Log failed download attempt
+    await database.logDownload(label, req.ip || req.connection.remoteAddress || 'unknown', req.get('User-Agent'), 404);
     return res.status(404).json({ error: `No patterns found for label: ${label}` });
   }
+
+  // Log successful download
+  await database.logDownload(label, req.ip || req.connection.remoteAddress || 'unknown', req.get('User-Agent'), 200);
 
   // Format patterns as simple text file - just the patterns, one per line
   const configContent = patterns.map(pattern => pattern.pattern).join('\n');
@@ -196,6 +201,20 @@ app.get('/api/config-files/:label([a-z0-9_-]+)\\.cfg', asyncHandler(async (req: 
   
   Logger.info(`Served .cfg file for label: ${label} with ${patterns.length} patterns`);
   return res.send(configContent);
+}));
+
+// Get download logs
+app.get('/api/logs', asyncHandler(async (req: Request, res: Response) => {
+  Logger.debug('GET /api/logs');
+  
+  const limit = parseInt(req.query.limit as string) || 100;
+  
+  if (limit > 1000) {
+    return res.status(400).json({ error: 'Limit cannot exceed 1000' });
+  }
+  
+  const logs = await database.getDownloadLogs(limit);
+  return res.json(logs);
 }));
 
 // Pattern generation endpoint
