@@ -49,7 +49,7 @@ VITE_TABLE_COLUMNS=label,pattern,description
 ```
 
 **Background Logo Options:**
-- **Text**: Any text string (e.g., "AB", "OHSU", "ACME")
+- **Text**: Any text string (e.g., "AB", "ACME")
 - **Lucide Icons**: Use `lucide-` prefix with any icon name from [Lucide Icons](https://lucide.dev/icons/)
   - Examples: `lucide-frown`, `lucide-settings`, `lucide-phone`, `lucide-network`
   - Icons automatically resize and adapt to dark/light themes
