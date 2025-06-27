@@ -2,13 +2,22 @@ import { Link } from "react-router-dom";
 import { NavigationMenu, NavigationMenuList, NavigationMenuLink } from "@/components/ui/navigation-menu";
 import { useConfig } from '@/config/ConfigContext';
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Home, Code, FileText, Calculator, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 export default function Component() {
   const config = useConfig();
   const { toast } = useToast();
+  const [patternMapNumber, setPatternMapNumber] = useState("101");
+
+  // Get current host for dynamic examples
+  const currentHost = window.location.host;
+  const protocol = window.location.protocol;
+  const fullHost = `${protocol}//${currentHost}`;
 
   const handleCopyCommand = (command) => {
     navigator.clipboard.writeText(command);
@@ -55,6 +64,22 @@ export default function Component() {
                     How to configure E164 pattern maps on your Cisco router
                   </DialogDescription>
                 </DialogHeader>
+                <div className="mb-4 p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                  <Label htmlFor="pattern-map-number" className="text-sm font-medium">
+                    Pattern Map Number
+                  </Label>
+                  <Input
+                    id="pattern-map-number"
+                    type="text"
+                    value={patternMapNumber}
+                    onChange={(e) => setPatternMapNumber(e.target.value)}
+                    placeholder="101"
+                    className="mt-1 w-32"
+                  />
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                    This number will be used in all configuration examples below
+                  </p>
+                </div>
                 <div className="space-y-4 overflow-y-auto max-h-[60vh] pr-2">
                   <div>
                     <h3 className="text-lg font-semibold mb-2">Basic Configuration</h3>
@@ -62,15 +87,15 @@ export default function Component() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleCopyCommand("voice class e164-pattern-map XXX\n url http://http-host/config-files/destination-pattern-map.cfg")}
+                        onClick={() => handleCopyCommand(`voice class e164-pattern-map ${patternMapNumber}\n url ${fullHost}/api/config-files/destination-pattern-map.cfg`)}
                         className="absolute top-2 right-2 h-6 w-6 p-0 hover:bg-slate-700 text-gray-400 hover:text-white"
                         title="Copy command"
                       >
                         <Copy className="h-3 w-3" />
                       </Button>
                       <div className="text-gray-400"># Configure E164 pattern map</div>
-                      <div>voice class e164-pattern-map <span className="text-yellow-400">XXX</span></div>
-                      <div className="ml-2">url http://<span className="text-yellow-400">http-host</span>/config-files/<span className="text-yellow-400">destination-pattern-map</span>.cfg</div>
+                      <div>voice class e164-pattern-map <span className="text-yellow-400">{patternMapNumber}</span></div>
+                      <div className="ml-2">url <span className="text-yellow-400">{fullHost}</span>/api/config-files/<span className="text-yellow-400">destination-pattern-map</span>.cfg</div>
                     </div>
                   </div>
                   <div>
@@ -79,15 +104,15 @@ export default function Component() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleCopyCommand("voice class e164-pattern-map 101\n url http://<http-host>/config-files/us-local.cfg")}
+                        onClick={() => handleCopyCommand(`voice class e164-pattern-map ${patternMapNumber}\n url ${fullHost}/api/config-files/us-local.cfg`)}
                         className="absolute top-2 right-2 h-6 w-6 p-0 hover:bg-slate-700 text-gray-400 hover:text-white"
                         title="Copy command"
                       >
                         <Copy className="h-3 w-3" />
                       </Button>
                       <div className="text-gray-400"># Example with your server</div>
-                      <div>voice class e164-pattern-map <span className="text-yellow-400">101</span></div>
-                      <div className="ml-2">url http://<span className="text-yellow-400">&lt;http-host&gt;</span>/config-files/<span className="text-yellow-400">us-local</span>.cfg</div>
+                      <div>voice class e164-pattern-map <span className="text-yellow-400">{patternMapNumber}</span></div>
+                      <div className="ml-2">url <span className="text-yellow-400">{fullHost}</span>/api/config-files/<span className="text-yellow-400">us-local</span>.cfg</div>
                     </div>
                   </div>
                   <div>
@@ -96,7 +121,7 @@ export default function Component() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleCopyCommand("dial-peer voice 1 voip\n voice-class e164-pattern-map 101\n session target ipv4:10.1.1.1")}
+                        onClick={() => handleCopyCommand(`dial-peer voice 1 voip\n voice-class e164-pattern-map ${patternMapNumber}\n session target ipv4:10.1.1.1`)}
                         className="absolute top-2 right-2 h-6 w-6 p-0 hover:bg-slate-700 text-gray-400 hover:text-white"
                         title="Copy command"
                       >
@@ -104,7 +129,7 @@ export default function Component() {
                       </Button>
                       <div className="text-gray-400"># Apply pattern map to dial peer</div>
                       <div>dial-peer voice <span className="text-yellow-400">1</span> voip</div>
-                      <div className="ml-2">voice-class e164-pattern-map <span className="text-yellow-400">101</span></div>
+                      <div className="ml-2">voice-class e164-pattern-map <span className="text-yellow-400">{patternMapNumber}</span></div>
                       <div className="ml-2">session target ipv4:<span className="text-yellow-400">10.1.1.1</span></div>
                     </div>
                   </div>
@@ -114,14 +139,14 @@ export default function Component() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleCopyCommand("voice class e164-pattern-map load 101")}
+                        onClick={() => handleCopyCommand(`voice class e164-pattern-map load ${patternMapNumber}`)}
                         className="absolute top-2 right-2 h-6 w-6 p-0 hover:bg-slate-700 text-gray-400 hover:text-white"
                         title="Copy command"
                       >
                         <Copy className="h-3 w-3" />
                       </Button>
                       <div className="text-gray-400"># Manually reload patterns from URL</div>
-                      <div>voice class e164-pattern-map load <span className="text-yellow-400">101</span></div>
+                      <div>voice class e164-pattern-map load <span className="text-yellow-400">{patternMapNumber}</span></div>
                     </div>
                     <div className="mt-2 text-sm text-muted-foreground">
                       <strong>Example output:</strong>
