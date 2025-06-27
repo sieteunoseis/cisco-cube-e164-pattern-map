@@ -163,18 +163,18 @@ export default function Component() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleCopyCommand("kron occurrence ReloadE164PatternMaps at 6:00 recurring\n!\n\nkron policy-list ReloadE164PatternMaps\n cli voice class e164-pattern-map load 101\n!")}
+                        onClick={() => handleCopyCommand(`kron occurrence ReloadE164PatternMaps in 15\n!\n\nkron policy-list ReloadE164PatternMaps\n cli voice class e164-pattern-map load ${patternMapNumber}\n!`)}
                         className="absolute top-2 right-2 h-6 w-6 p-0 hover:bg-slate-700 text-gray-400 hover:text-white"
                         title="Copy command"
                       >
                         <Copy className="h-3 w-3" />
                       </Button>
-                      <div className="text-gray-400"># Schedule automatic reload at 6:00 AM daily</div>
-                      <div>kron occurrence ReloadE164PatternMaps at <span className="text-yellow-400">6:00</span> recurring</div>
+                      <div className="text-gray-400"># Schedule automatic reload every 15 minutes</div>
+                      <div>kron occurrence ReloadE164PatternMaps in <span className="text-yellow-400">15</span></div>
                       <div>!</div>
                       <br />
                       <div>kron policy-list ReloadE164PatternMaps</div>
-                      <div> cli voice class e164-pattern-map load <span className="text-yellow-400">101</span></div>
+                      <div> cli voice class e164-pattern-map load <span className="text-yellow-400">{patternMapNumber}</span></div>
                       <div>!</div>
                     </div>
                   </div>
@@ -184,14 +184,14 @@ export default function Component() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleCopyCommand("show voice class e164-pattern-map 101")}
+                        onClick={() => handleCopyCommand(`show voice class e164-pattern-map ${patternMapNumber}`)}
                         className="absolute top-2 right-2 h-6 w-6 p-0 hover:bg-slate-700 text-gray-400 hover:text-white"
                         title="Copy command"
                       >
                         <Copy className="h-3 w-3" />
                       </Button>
                       <div className="text-gray-400"># Check pattern map status</div>
-                      <div>show voice class e164-pattern-map <span className="text-yellow-400">101</span></div>
+                      <div>show voice class e164-pattern-map <span className="text-yellow-400">{patternMapNumber}</span></div>
                     </div>
                     <div className="mt-2 text-sm text-muted-foreground">
                       <strong>Example output:</strong>
@@ -209,6 +209,29 @@ export default function Component() {
                       <div className="text-white">9(258)7777</div>
                     </div>
                   </div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Verify Kron Schedule</h3>
+                    <div className="relative bg-slate-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleCopyCommand("show kron schedule")}
+                        className="absolute top-2 right-2 h-6 w-6 p-0 hover:bg-slate-700 text-gray-400 hover:text-white"
+                        title="Copy command"
+                      >
+                        <Copy className="h-3 w-3" />
+                      </Button>
+                      <div className="text-gray-400"># Check kron scheduler status</div>
+                      <div>show kron schedule</div>
+                    </div>
+                    <div className="mt-2 text-sm text-muted-foreground">
+                      <strong>Example output:</strong>
+                    </div>
+                    <div className="bg-slate-800 text-gray-300 p-4 rounded-lg font-mono text-sm overflow-x-auto mt-1">
+                      <div>Kron Occurrence Schedule</div>
+                      <div className="text-white">ReloadE164PatternMaps inactive, will run again in 0 days 00:01:37</div>
+                    </div>
+                  </div>
                   <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
                     <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">💡 Tips:</h4>
                     <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
@@ -218,7 +241,8 @@ export default function Component() {
                       <li>• Use the copy button next to each label to get the exact URL</li>
                       <li>• Use <code className="bg-blue-200 dark:bg-blue-800 px-1 rounded">show voice class e164-pattern-map 101</code> to verify your configuration</li>
                       <li>• Use <code className="bg-blue-200 dark:bg-blue-800 px-1 rounded">voice class e164-pattern-map load 101</code> to manually reload patterns</li>
-                      <li>• Use Kron scheduler for automatic daily reloads at a specific time</li>
+                      <li>• Use Kron scheduler for automatic reloads every 15 minutes</li>
+                      <li>• Use <code className="bg-blue-200 dark:bg-blue-800 px-1 rounded">show kron schedule</code> to check when the next reload will occur</li>
                     </ul>
                   </div>
                 </div>
