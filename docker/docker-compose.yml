@@ -1,12 +1,12 @@
 # Docker Compose for Testing with Pre-built Images
 # This pulls images from GitHub Container Registry for testing purposes
 
-name: react-express-tailwind-app
+name: cisco-cube-e164-pattern-map
 
 services:
   frontend:
-    image: ghcr.io/sieteunoseis/react-express-tailwind-app/frontend:${FRONTEND_TAG:-latest}
-    container_name: react-frontend
+    image: ghcr.io/sieteunoseis/cisco-cube-e164-pattern-map/frontend:${FRONTEND_TAG:-latest}
+    container_name: cisco-cube-frontend
     ports:
       - "3000:80"
     networks:
@@ -15,16 +15,17 @@ services:
       - PORT=${PORT:-3001}
       - BACKEND_HOST=${BACKEND_HOST:-backend}
       - VITE_API_URL=
-      - VITE_BRANDING_NAME=${VITE_BRANDING_NAME:-Automate Builders}
-      - VITE_BRANDING_URL=${VITE_BRANDING_URL:-https://automate.builders}
-      - VITE_TABLE_COLUMNS=${VITE_TABLE_COLUMNS:-name,hostname,username,password,version}
+      - VITE_BRANDING_NAME=${VITE_BRANDING_NAME:-Cisco CUBE E164 Pattern Map}
+      - VITE_BRANDING_URL=${VITE_BRANDING_URL:-https://github.com/sieteunoseis/cisco-cube-e164-pattern-map}
+      - VITE_TABLE_COLUMNS=${VITE_TABLE_COLUMNS:-label,pattern,description}
+      - VITE_BACKGROUND_LOGO_TEXT=${VITE_BACKGROUND_LOGO_TEXT:-E164}
     depends_on:
       - backend
     restart: unless-stopped
 
   backend:
-    image: ghcr.io/sieteunoseis/react-express-tailwind-app/backend:${BACKEND_TAG:-latest}
-    container_name: react-backend
+    image: ghcr.io/sieteunoseis/cisco-cube-e164-pattern-map/backend:${BACKEND_TAG:-latest}
+    container_name: cisco-cube-backend
     ports:
       - "${PORT:-3001}:${PORT:-3001}"  # Expose backend port for testing
     expose:
@@ -34,7 +35,7 @@ services:
     environment:
       - PORT=${PORT:-3001}
       - NODE_ENV=${NODE_ENV:-production}
-      - VITE_TABLE_COLUMNS=${VITE_TABLE_COLUMNS:-name,hostname,username,password,version}
+      - VITE_TABLE_COLUMNS=${VITE_TABLE_COLUMNS:-label,pattern,description}
     volumes:
       - backend_data:/app/db  # Persist database
     restart: unless-stopped
