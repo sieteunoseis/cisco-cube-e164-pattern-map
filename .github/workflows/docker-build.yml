@@ -78,8 +78,7 @@ jobs:
         if [ ! -f .env ]; then
           if [ -f ../.env.example ]; then
             cp ../.env.example .env
-            # Set the backend port to avoid conflicts with frontend
-            sed -i 's/PORT=3000/PORT=5001/' .env
+            # Backend port no longer exposed, handled via proxy
             sed -i 's/NODE_ENV=development/NODE_ENV=production/' .env
           else
             # Create minimal .env file for E164 Pattern Map
@@ -104,16 +103,14 @@ jobs:
         # Wait for services
         sleep 30
         
-        # Get the backend port from .env and clean it up (remove comments and whitespace)
-        BACKEND_PORT=$(grep "^PORT=" .env 2>/dev/null | cut -d'=' -f2 | cut -d'#' -f1 | tr -d '\r\n[:space:]' || echo "5001")
-        echo "Backend port: $BACKEND_PORT"
-        echo "Port length: ${#BACKEND_PORT}"
+        # Test frontend is accessible
+        curl -f "http://localhost:3000" || exit 1
         
-        # Test backend health endpoint directly
-        curl -f "http://localhost:${BACKEND_PORT}/health" || exit 1
+        # Test backend health endpoint via frontend proxy
+        curl -f "http://localhost:3000/api/health" || exit 1
         
-        # Test API through backend
-        curl -f "http://localhost:${BACKEND_PORT}/api/data" || exit 1
+        # Test API through frontend proxy
+        curl -f "http://localhost:3000/api/data" || exit 1
         
         # Cleanup
         docker compose down
