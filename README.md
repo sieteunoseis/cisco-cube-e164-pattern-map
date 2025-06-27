@@ -15,7 +15,32 @@ A specialized React application for managing Cisco CUBE E164 pattern mappings wi
 - **🐳 Docker Ready**: Containerized deployment with Docker Compose
 - **📖 Cisco Integration**: Built-in configuration guides and copy-paste commands
 
-## Quick Start
+## 🎯 Easiest Deployment (Recommended)
+
+**The simplest way to deploy this application is using the Docker setup from the `docker/` folder:**
+
+```bash
+# Download the Docker Compose file
+wget https://raw.githubusercontent.com/sieteunoseis/cisco-cube-e164-pattern-map/master/docker/docker-compose.yml
+
+# Set your environment variables (optional)
+export VITE_BRANDING_NAME="Your Company E164 Manager"
+export VITE_BRANDING_URL="https://yourcompany.com"
+
+# Start the application (that's it!)
+docker compose up -d
+```
+
+**Why this is the easiest:**
+- ✅ **No building required** - uses pre-built images from GitHub Container Registry
+- ✅ **Single command deployment** - just `docker compose up -d`
+- ✅ **Production ready** - nginx proxy, health checks, persistent storage
+- ✅ **Single port** - only exposes port 3000 (secure architecture)
+- ✅ **Auto-restart** - containers restart automatically if they fail
+
+See the [`docker/README.md`](docker/README.md) for detailed deployment instructions and configuration options.
+
+## Quick Start (Development)
 
 ### 1. Clone and Install
 ```bash
@@ -97,6 +122,8 @@ voice class e164-pattern-map 101
 ```
 
 ### 4. Docker Deployment
+
+> **💡 For production, see the [Recommended Deployment](#-recommended-deployment) section above using the `docker/` folder setup.**
 
 #### Local Development Docker
 
