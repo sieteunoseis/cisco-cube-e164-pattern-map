@@ -15,6 +15,12 @@ A specialized React application for managing Cisco CUBE E164 pattern mappings wi
 - **🐳 Docker Ready**: Containerized deployment with Docker Compose
 - **📖 Cisco Integration**: Built-in configuration guides and copy-paste commands
 
+## 📸 Application Preview
+
+<img src="screenshots/Home.png" alt="Cisco CUBE E164 Pattern Map Dashboard" width="600">
+
+*Main dashboard showing pattern management, configuration file downloads, and built-in Cisco router configuration guide*
+
 ## 📸 Screenshots
 
 See the application in action! Check out the [screenshots folder](screenshots/) for visual examples of:
