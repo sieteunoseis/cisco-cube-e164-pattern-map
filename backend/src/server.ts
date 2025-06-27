@@ -64,6 +64,14 @@ app.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Root endpoint - redirect to frontend
+app.get('/', (req: Request, res: Response) => {
+  const frontendUrl = process.env.NODE_ENV === 'production' 
+    ? process.env.FRONTEND_URL || 'http://localhost:3000'
+    : 'http://localhost:5173';
+  res.redirect(frontendUrl);
+});
+
 // Get all patterns or specific pattern by ID
 app.get('/api/data', asyncHandler(async (req: Request, res: Response) => {
   const id = req.query.id;

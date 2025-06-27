@@ -45,49 +45,63 @@ VITE_BACKGROUND_LOGO_TEXT="AB"          # Background logo: text or Lucide icon (
 VITE_TABLE_COLUMNS=label,pattern,description
 
 # Production API URL (for Docker/production deployments)
-# VITE_API_URL=http://backend:5001
+VITE_API_URL=https://your-backend.domain.com  # Required for production .cfg file downloads
 ```
 
 **Background Logo Options:**
+
 - **Text**: Any text string (e.g., "AB", "ACME")
 - **Lucide Icons**: Use `lucide-` prefix with any icon name from [Lucide Icons](https://lucide.dev/icons/)
   - Examples: `lucide-frown`, `lucide-settings`, `lucide-phone`, `lucide-network`
   - Icons automatically resize and adapt to dark/light themes
-```
 
 ### 3. Start Development Server
+
 ```bash
 npm run dev  # Starts both frontend and backend in development mode
 ```
 
 The application will be available at:
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:5001
-- **Config Files**: http://localhost:5001/config-files/{label}.cfg
+
+- **Frontend**: <http://localhost:5173>
+- **Backend API**: <http://localhost:5001>
+- **Config Files**: <http://localhost:5001/config-files/{label}.cfg>
 
 ## Using the Application
 
 ### E164 Pattern Management
+
 1. **Home Page**: Add individual E164 patterns with labels and descriptions
 2. **Pattern Generator**: Convert number ranges (e.g., 5551000-5551999) to optimized patterns
 3. **Bulk Operations**: Process multiple numbers at once or delete entire label groups
 4. **Configuration Guide**: Built-in Cisco router configuration examples
 
 ### Cisco Router Integration
+
 The application automatically serves `.cfg` files for each label at:
-```
+
+```text
 http://your-server:5001/config-files/{label}.cfg
 ```
 
 Use in Cisco configuration:
+
 ```cisco
 voice class e164-pattern-map 101
- url http://your-server:5001/config-files/us-local.cfg
+ url https://your-backend.domain.com/config-files/us-local.cfg
 ```
 
-### 4. Build and run with Docker
+**Production Example**:
+
+```cisco
+voice class e164-pattern-map 101
+ url http://your-server:3001/config-files/portland-npa-503.cfg
+```
+
+### 4. Docker Deployment
 
 #### Local Development Docker
+
 ```bash
 # Build and run with Docker Compose (builds locally)
 npm run build  # or docker-compose up --build
@@ -98,8 +112,43 @@ docker-compose up           # Start existing containers
 docker-compose down         # Stop containers
 ```
 
+#### Production Deployment with Docker
+
+For production with custom domains and environment variables:
+
+```bash
+# Set environment variables for production
+export FRONTEND_URL=http://your-server:3000
+export VITE_API_URL=http://your-server:3001
+export VITE_BRANDING_NAME="Your Company E164 Manager"
+export VITE_BRANDING_URL="https://yourcompany.com"
+export VITE_BACKGROUND_LOGO_TEXT="E164"
+
+# Download and run with pre-built images
+wget https://raw.githubusercontent.com/sieteunoseis/cisco-cube-e164-pattern-map/master/docker/docker-compose.yml
+docker compose up -d
+```
+
+#### Environment Variables for Production
+
+| Variable | Required | Description | Example |
+|----------|----------|-------------|---------|
+| `FRONTEND_URL` | **Yes** | Frontend URL for CORS | `http://your-server:3000` |
+| `VITE_API_URL` | **Yes** | Backend URL for .cfg downloads | `http://your-server:3001` |
+| `VITE_BRANDING_NAME` | No | Application title | `"My E164 Manager"` |
+| `VITE_BRANDING_URL` | No | Company/project URL | `"https://company.com"` |
+| `VITE_BACKGROUND_LOGO_TEXT` | No | Background logo text/icon | `"E164"` or `"lucide-phone"` |
+| `PORT` | No | Backend port | `3001` |
+
+**Important**:
+
+- `FRONTEND_URL` must match your frontend domain for CORS to work properly
+- `VITE_API_URL` must point to your publicly accessible backend for Cisco configuration file downloads to work
+
 #### Testing with Pre-built Images
+
 For testing with images from GitHub Container Registry:
+
 ```bash
 cd docker
 ./test.sh          # Test with pre-built images

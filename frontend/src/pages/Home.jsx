@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import BackgroundLogo from "@/components/BackgroundLogo";
 import SavedPatterns from "@/components/SavedPatterns";
-import { apiCall } from "@/lib/api";
+import { apiCall, API_BASE_URL } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,6 +15,7 @@ import CreatableSelect from 'react-select/creatable';
 
 const Home = () => {
   const { toast } = useToast();
+  const savedPatternsRef = useRef(null);
 
   // Pattern state
   const [patterns, setPatterns] = useState([]);
@@ -120,6 +121,10 @@ const Home = () => {
         setFormData({ label: '', pattern: '', description: '' });
         setSelectedLabels([]);
         fetchPatterns();
+        // Refresh SavedPatterns component
+        if (savedPatternsRef.current) {
+          savedPatternsRef.current.refresh();
+        }
       } else {
         // Try to get detailed error from response
         const errorData = await response.json().catch(() => ({}));
@@ -164,14 +169,15 @@ const Home = () => {
 
   // Handle .cfg file download
   const handleDownloadCfg = (label) => {
-    // Note: PORT is 5001 based on the .env file change
-    const cfgUrl = `http://localhost:5001/config-files/${label}.cfg`;
+    const baseUrl = API_BASE_URL || window.location.origin;
+    const cfgUrl = `${baseUrl}/config-files/${label}.cfg`;
     window.open(cfgUrl, '_blank');
   };
 
   // Handle copying .cfg URL to clipboard
   const handleCopyLink = async (label) => {
-    const cfgUrl = `http://localhost:5001/config-files/${label}.cfg`;
+    const baseUrl = API_BASE_URL || window.location.origin;
+    const cfgUrl = `${baseUrl}/config-files/${label}.cfg`;
     try {
       await navigator.clipboard.writeText(cfgUrl);
       toast({
@@ -265,6 +271,10 @@ const Home = () => {
         setEditFormData({ label: '', pattern: '', description: '' });
         setEditSelectedLabels([]);
         fetchPatterns();
+        // Refresh SavedPatterns component
+        if (savedPatternsRef.current) {
+          savedPatternsRef.current.refresh();
+        }
       } else {
         // Try to get detailed error from response
         const errorData = await response.json().catch(() => ({}));
@@ -724,7 +734,7 @@ const Home = () => {
         </div>
 
         {/* Saved E164 Patterns */}
-        <SavedPatterns onPatternChange={fetchPatterns} />
+        <SavedPatterns ref={savedPatternsRef} onPatternChange={fetchPatterns} />
 
         {/* Edit Pattern Dialog */}
         {editingPattern && (

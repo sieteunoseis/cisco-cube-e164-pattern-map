@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,9 +6,9 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Download, Copy, Trash2, Edit, Search, AlertTriangle, Link } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { apiCall } from "@/lib/api";
+import { apiCall, API_BASE_URL } from "@/lib/api";
 
-const SavedPatterns = ({ onPatternChange, showActions = true, title = "Saved E164 Patterns" }) => {
+const SavedPatterns = forwardRef(({ onPatternChange, showActions = true, title = "Saved E164 Patterns" }, ref) => {
   const { toast } = useToast();
   const [patterns, setPatterns] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,6 +44,11 @@ const SavedPatterns = ({ onPatternChange, showActions = true, title = "Saved E16
     fetchPatterns();
   }, []);
 
+  // Expose refresh method to parent component
+  useImperativeHandle(ref, () => ({
+    refresh: fetchPatterns
+  }));
+
   // Handle pattern deletion
   const handleDelete = async (id) => {
     try {
@@ -70,13 +75,15 @@ const SavedPatterns = ({ onPatternChange, showActions = true, title = "Saved E16
 
   // Handle .cfg file download
   const handleDownloadCfg = (label) => {
-    const cfgUrl = `http://localhost:5001/config-files/${label}.cfg`;
+    const baseUrl = API_BASE_URL || window.location.origin;
+    const cfgUrl = `${baseUrl}/config-files/${label}.cfg`;
     window.open(cfgUrl, '_blank');
   };
 
   // Handle copying .cfg URL to clipboard
   const handleCopyLink = async (label) => {
-    const cfgUrl = `http://localhost:5001/config-files/${label}.cfg`;
+    const baseUrl = API_BASE_URL || window.location.origin;
+    const cfgUrl = `${baseUrl}/config-files/${label}.cfg`;
     try {
       await navigator.clipboard.writeText(cfgUrl);
       toast({
@@ -314,6 +321,8 @@ const SavedPatterns = ({ onPatternChange, showActions = true, title = "Saved E16
       </Dialog>
     </Card>
   );
-};
+});
+
+SavedPatterns.displayName = 'SavedPatterns';
 
 export default SavedPatterns;

@@ -1,8 +1,9 @@
 # Use specific version and lighter base image
 FROM node:20-alpine
 
-# Add non-root user
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+# Install curl for health checks and add non-root user
+RUN apk add --no-cache curl && \
+    addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Create app directory and set ownership
 WORKDIR /usr/src/app

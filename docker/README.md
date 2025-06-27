@@ -28,10 +28,51 @@ docker compose down
 ## Configuration
 
 ### Environment Variables
-Copy and customize the environment file:
+
+The application supports several environment variables for customization:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORT` | `3001` | Backend server port |
+| `BACKEND_HOST` | `backend` | Backend hostname for internal communication |
+| `FRONTEND_URL` | `http://localhost:3000` | Frontend URL for CORS (production) |
+| `VITE_API_URL` | `http://localhost:3001` | Backend API URL for frontend |
+| `VITE_BRANDING_NAME` | `Automate Builders` | Application branding name |
+| `VITE_BRANDING_URL` | `https://github.com/sieteunoseis/cisco-cube-e164-pattern-map` | Branding URL |
+| `VITE_TABLE_COLUMNS` | `label,pattern,description` | Visible table columns |
+| `VITE_BACKGROUND_LOGO_TEXT` | `AB` | Background logo text |
+| `FRONTEND_TAG` | `latest` | Frontend Docker image tag |
+| `BACKEND_TAG` | `latest` | Backend Docker image tag |
+
+#### Local Development
+For local development, use default settings:
 ```bash
-cp .env.example .env
-# Edit .env with your preferred settings
+docker compose up -d
+```
+
+#### Production Deployment
+For production with custom domains:
+```bash
+# Set your URLs and branding
+export FRONTEND_URL=http://your-server:3000
+export VITE_API_URL=http://your-server:3001
+export VITE_BRANDING_NAME="Your Company Name"
+export VITE_BRANDING_URL="https://your-company.com"
+
+docker compose up -d
+```
+
+#### Custom Environment File
+Create a `.env` file for persistent configuration:
+```bash
+# .env
+FRONTEND_URL=http://your-server:3000
+VITE_API_URL=http://your-server:3001
+VITE_BRANDING_NAME=My E164 Pattern Manager
+VITE_BRANDING_URL=https://my-company.com
+VITE_TABLE_COLUMNS=label,pattern,description
+VITE_BACKGROUND_LOGO_TEXT=E164
+PORT=3001
 ```
 
 ### Available Images
@@ -43,6 +84,9 @@ The compose file pulls images from GitHub Container Registry:
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:3001 (or custom PORT)
 - **Health Check**: http://localhost:3001/health
+- **Config Files**: http://localhost:3001/config-files/{label}.cfg
+
+**Important**: For production deployments, the backend must be publicly accessible for Cisco configuration file downloads to work properly.
 
 ## Testing Different Versions
 

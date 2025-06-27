@@ -14,11 +14,11 @@ services:
     environment:
       - PORT=${PORT:-3001}
       - BACKEND_HOST=${BACKEND_HOST:-backend}
-      - VITE_API_URL=
-      - VITE_BRANDING_NAME=${VITE_BRANDING_NAME:-Cisco CUBE E164 Pattern Map}
+      - VITE_API_URL=${VITE_API_URL:-http://localhost:3001}
+      - VITE_BRANDING_NAME=${VITE_BRANDING_NAME:-Automate Builders}
       - VITE_BRANDING_URL=${VITE_BRANDING_URL:-https://github.com/sieteunoseis/cisco-cube-e164-pattern-map}
       - VITE_TABLE_COLUMNS=${VITE_TABLE_COLUMNS:-label,pattern,description}
-      - VITE_BACKGROUND_LOGO_TEXT=${VITE_BACKGROUND_LOGO_TEXT:-E164}
+      - VITE_BACKGROUND_LOGO_TEXT=${VITE_BACKGROUND_LOGO_TEXT:-AB}
     depends_on:
       - backend
     restart: unless-stopped
@@ -35,6 +35,7 @@ services:
     environment:
       - PORT=${PORT:-3001}
       - NODE_ENV=${NODE_ENV:-production}
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}
       - VITE_TABLE_COLUMNS=${VITE_TABLE_COLUMNS:-label,pattern,description}
     volumes:
       - backend_data:/app/db  # Persist database
