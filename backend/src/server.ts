@@ -168,7 +168,7 @@ app.delete('/api/data/:id', asyncHandler(async (req: Request, res: Response) => 
 }));
 
 // Serve E164 patterns as Cisco .cfg file
-app.get('/config-files/:label.cfg', asyncHandler(async (req: Request, res: Response) => {
+app.get('/api/config-files/:label([a-z0-9_-]+)\\.cfg', asyncHandler(async (req: Request, res: Response) => {
   const { label } = req.params;
   
   // Validate label format (slug validation - allow hyphens and underscores)

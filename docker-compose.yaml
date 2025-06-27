@@ -6,7 +6,6 @@ services:
       - "3000:80" # Map port 3000 on host to port 80 in container
     networks:
       - app-network
-    environment:
     env_file:
       - .env
     depends_on:
