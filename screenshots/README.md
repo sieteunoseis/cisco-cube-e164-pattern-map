@@ -32,6 +32,15 @@ Built-in Cisco router configuration guide featuring:
 - Kron scheduler setup for automatic reloads
 - Verification commands and example outputs
 
+### Logging
+![Logging](Logging.png)
+
+Comprehensive logging system that tracks:
+- Configuration file downloads with timestamps
+- Pattern access and usage statistics
+- System events and user activities
+- Error tracking and debugging information
+
 ## Usage
 
 These screenshots demonstrate the key features and user interface of the application. They can be used for:
@@ -48,5 +57,6 @@ These screenshots demonstrate the key features and user interface of the applica
 | `Home.png` | Main dashboard | Pattern management, data table, form inputs |
 | `Pattern Generator.png` | Pattern generation tool | Range conversion, bulk processing, export options |
 | `Configuration Guide.png` | Cisco configuration help | Dynamic examples, copy commands, kron setup |
+| `Logging.png` | Logging system | Download tracking, usage statistics, system events |
 
 All screenshots show the application in light mode with the default "Automate Builders" branding. The interface supports both light and dark themes and custom branding options.
