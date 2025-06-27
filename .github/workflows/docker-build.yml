@@ -86,7 +86,7 @@ jobs:
             echo "VITE_BRANDING_NAME=Cisco CUBE E164 Pattern Map" >> .env
             echo "VITE_BACKGROUND_LOGO_TEXT=AB" >> .env
             echo "VITE_TABLE_COLUMNS=label,pattern,description" >> .env
-            echo "PORT=5001" >> .env
+            echo "PORT=3001" >> .env
             echo "NODE_ENV=production" >> .env
             echo "UID=1000" >> .env
             echo "GID=1000" >> .env
