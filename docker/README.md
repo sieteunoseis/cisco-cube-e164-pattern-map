@@ -7,10 +7,10 @@ This folder contains Docker Compose configuration for testing the application wi
 ### Download Docker Compose File
 ```bash
 # Download docker-compose.yml directly from GitHub
-wget https://raw.githubusercontent.com/sieteunoseis/cisco-cube-e164-pattern-map/main/docker/docker-compose.yml
+wget https://raw.githubusercontent.com/sieteunoseis/cisco-cube-e164-pattern-map/master/docker/docker-compose.yml
 
 # Or download entire docker folder
-wget -r --no-parent --reject="index.html*" https://raw.githubusercontent.com/sieteunoseis/cisco-cube-e164-pattern-map/main/docker/
+wget -r --no-parent --reject="index.html*" https://raw.githubusercontent.com/sieteunoseis/cisco-cube-e164-pattern-map/master/docker/
 ```
 
 ### Run Application
@@ -85,7 +85,7 @@ docker compose -f docker-compose.yaml up -d --build
 Or download just the build compose file:
 ```bash
 # Download the local build version
-wget https://raw.githubusercontent.com/sieteunoseis/cisco-cube-e164-pattern-map/main/docker-compose.yaml
+wget https://raw.githubusercontent.com/sieteunoseis/cisco-cube-e164-pattern-map/master/docker-compose.yaml
 
 # Build and run
 docker compose -f docker-compose.yaml up -d --build
