@@ -36,7 +36,6 @@ The application supports several environment variables for customization:
 | `PORT` | `3001` | Backend server port |
 | `BACKEND_HOST` | `backend` | Backend hostname for internal communication |
 | `FRONTEND_URL` | `http://localhost:3000` | Frontend URL for CORS (production) |
-| `VITE_API_URL` | `http://localhost:3001` | Backend API URL for frontend |
 | `VITE_BRANDING_NAME` | `Automate Builders` | Application branding name |
 | `VITE_BRANDING_URL` | `https://github.com/sieteunoseis/cisco-cube-e164-pattern-map` | Branding URL |
 | `VITE_TABLE_COLUMNS` | `label,pattern,description` | Visible table columns |
@@ -55,7 +54,6 @@ For production with custom domains:
 ```bash
 # Set your URLs and branding
 export FRONTEND_URL=http://your-server:3000
-export VITE_API_URL=http://your-server:3001
 export VITE_BRANDING_NAME="Your Company Name"
 export VITE_BRANDING_URL="https://your-company.com"
 
@@ -67,7 +65,6 @@ Create a `.env` file for persistent configuration:
 ```bash
 # .env
 FRONTEND_URL=http://your-server:3000
-VITE_API_URL=http://your-server:3001
 VITE_BRANDING_NAME=My E164 Pattern Manager
 VITE_BRANDING_URL=https://my-company.com
 VITE_TABLE_COLUMNS=label,pattern,description
@@ -82,11 +79,9 @@ The compose file pulls images from GitHub Container Registry:
 
 ### Port Configuration
 - **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:3001 (or custom PORT)
-- **Health Check**: http://localhost:3001/health
-- **Config Files**: http://localhost:3001/config-files/{label}.cfg
-
-**Important**: For production deployments, the backend must be publicly accessible for Cisco configuration file downloads to work properly.
+- **Backend API**: Accessible only via frontend proxy (not directly exposed)
+- **Health Check**: http://localhost:3000/api/health
+- **Config Files**: http://localhost:3000/config-files/{label}.cfg
 
 ## Testing Different Versions
 
@@ -147,8 +142,8 @@ docker tag cisco-cube-e164-pattern-map_backend ghcr.io/sieteunoseis/cisco-cube-e
 
 ### Health Check Failures
 ```bash
-# Check backend health
-curl http://localhost:3001/health
+# Check backend health via proxy
+curl http://localhost:3000/api/health
 
 # Check backend logs
 docker compose logs backend
@@ -159,6 +154,10 @@ docker compose logs backend
 # Test internal network connectivity
 docker compose exec cisco-cube-frontend ping cisco-cube-backend
 docker compose exec cisco-cube-frontend curl http://backend:3001/health
+
+# Test proxy functionality
+curl http://localhost:3000/api/health
+curl http://localhost:3000/config-files/test.cfg
 
 # If using different container names, override the backend host
 BACKEND_HOST=cisco-cube-backend docker compose up -d

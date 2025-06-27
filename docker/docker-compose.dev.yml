@@ -16,7 +16,6 @@ services:
     environment:
       - PORT=${PORT:-3001}
       - BACKEND_HOST=${BACKEND_HOST:-backend}
-      - VITE_API_URL=/api
       - VITE_BRANDING_NAME=${VITE_BRANDING_NAME:-Automate Builders}
       - VITE_BRANDING_URL=${VITE_BRANDING_URL:-https://automate.builders}
       - VITE_TABLE_COLUMNS=${VITE_TABLE_COLUMNS:-name,hostname,username,password,version}

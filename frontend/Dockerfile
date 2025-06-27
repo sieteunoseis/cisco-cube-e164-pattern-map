@@ -9,7 +9,6 @@ COPY . .
 
 # Set environment variables for the build process
 ENV PORT=3000
-ENV VITE_API_URL=/api
 ENV NODE_ENV=production
 
 RUN npm run build

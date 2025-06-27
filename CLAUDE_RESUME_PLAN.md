@@ -16,7 +16,7 @@ File: `frontend/nginx.conf`
 File: `docker/docker-compose.yml`
 - Remove backend `ports` section (lines 29-30) to stop exposing port 3001
 - Keep `expose: - "${PORT:-3001}"` for internal docker network
-- Update VITE_API_URL default from `http://localhost:3001` to empty string (use relative URLs)
+- Remove VITE_API_URL entirely (use relative URLs)
 
 ### 3. Update Frontend Dockerfile
 File: `frontend/Dockerfile`

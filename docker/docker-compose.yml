@@ -14,7 +14,6 @@ services:
     environment:
       - PORT=${PORT:-3001}
       - BACKEND_HOST=${BACKEND_HOST:-backend}
-      - VITE_API_URL=${VITE_API_URL:-http://localhost:3001}
       - VITE_BRANDING_NAME=${VITE_BRANDING_NAME:-Automate Builders}
       - VITE_BRANDING_URL=${VITE_BRANDING_URL:-https://github.com/sieteunoseis/cisco-cube-e164-pattern-map}
       - VITE_TABLE_COLUMNS=${VITE_TABLE_COLUMNS:-label,pattern,description}
@@ -26,8 +25,7 @@ services:
   backend:
     image: ghcr.io/sieteunoseis/cisco-cube-e164-pattern-map/backend:${BACKEND_TAG:-latest}
     container_name: cisco-cube-backend
-    ports:
-      - "${PORT:-3001}:${PORT:-3001}"  # Expose backend port for testing
+    # Backend port not exposed - only accessible via docker network
     expose:
       - "${PORT:-3001}"
     networks:

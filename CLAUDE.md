@@ -92,7 +92,6 @@ Key environment variables in `.env`:
 - `NODE_ENV`: Environment mode
 - `VITE_TABLE_COLUMNS`: Comma-separated list of visible table columns
 - `VITE_BRANDING_NAME`: Application branding
-- `VITE_API_URL`: API URL for production builds
 
 ## Security Features
 

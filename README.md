@@ -44,8 +44,6 @@ VITE_BRANDING_URL="https://yourcompany.com"
 VITE_BACKGROUND_LOGO_TEXT="AB"          # Background logo: text or Lucide icon (prefix with "lucide-")
 VITE_TABLE_COLUMNS=label,pattern,description
 
-# Production API URL (for Docker/production deployments)
-VITE_API_URL=https://your-backend.domain.com  # Required for production .cfg file downloads
 ```
 
 **Background Logo Options:**
@@ -64,8 +62,8 @@ npm run dev  # Starts both frontend and backend in development mode
 The application will be available at:
 
 - **Frontend**: <http://localhost:5173>
-- **Backend API**: <http://localhost:5001>
-- **Config Files**: <http://localhost:5001/config-files/{label}.cfg>
+- **Backend API**: <http://localhost:5001> (development) or via frontend proxy (production)
+- **Config Files**: <http://localhost:5001/config-files/{label}.cfg> (development)
 
 ## Using the Application
 
@@ -81,21 +79,21 @@ The application will be available at:
 The application automatically serves `.cfg` files for each label at:
 
 ```text
-http://your-server:5001/config-files/{label}.cfg
+http://your-server:3000/config-files/{label}.cfg
 ```
 
 Use in Cisco configuration:
 
 ```cisco
 voice class e164-pattern-map 101
- url https://your-backend.domain.com/config-files/us-local.cfg
+ url https://your-frontend.domain.com/config-files/us-local.cfg
 ```
 
 **Production Example**:
 
 ```cisco
 voice class e164-pattern-map 101
- url http://your-server:3001/config-files/portland-npa-503.cfg
+ url http://your-server:3000/config-files/portland-npa-503.cfg
 ```
 
 ### 4. Docker Deployment
@@ -119,7 +117,6 @@ For production with custom domains and environment variables:
 ```bash
 # Set environment variables for production
 export FRONTEND_URL=http://your-server:3000
-export VITE_API_URL=http://your-server:3001
 export VITE_BRANDING_NAME="Your Company E164 Manager"
 export VITE_BRANDING_URL="https://yourcompany.com"
 export VITE_BACKGROUND_LOGO_TEXT="E164"
@@ -134,7 +131,6 @@ docker compose up -d
 | Variable | Required | Description | Example |
 |----------|----------|-------------|---------|
 | `FRONTEND_URL` | **Yes** | Frontend URL for CORS | `http://your-server:3000` |
-| `VITE_API_URL` | **Yes** | Backend URL for .cfg downloads | `http://your-server:3001` |
 | `VITE_BRANDING_NAME` | No | Application title | `"My E164 Manager"` |
 | `VITE_BRANDING_URL` | No | Company/project URL | `"https://company.com"` |
 | `VITE_BACKGROUND_LOGO_TEXT` | No | Background logo text/icon | `"E164"` or `"lucide-phone"` |
@@ -143,7 +139,7 @@ docker compose up -d
 **Important**:
 
 - `FRONTEND_URL` must match your frontend domain for CORS to work properly
-- `VITE_API_URL` must point to your publicly accessible backend for Cisco configuration file downloads to work
+- Config files are served through the frontend proxy at `/config-files/` for better security
 
 #### Testing with Pre-built Images
 

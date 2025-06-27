@@ -37,8 +37,8 @@ export default defineConfig(({ mode }) => {
         }
       },
       define: {
-        // Make API URL available at build time for production
-        __API_URL__: JSON.stringify(env.VITE_API_URL || '/api')
+        // Use relative URLs for all environments (nginx proxy handles routing)
+        __API_URL__: JSON.stringify('/api')
       },
       test: {
         globals: true,
