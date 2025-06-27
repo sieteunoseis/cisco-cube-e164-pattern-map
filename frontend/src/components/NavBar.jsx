@@ -230,7 +230,7 @@ export default function Component() {
                     </div>
                     <div className="bg-slate-800 text-gray-300 p-4 rounded-lg font-mono text-sm overflow-x-auto mt-1">
                       <div>Kron Occurrence Schedule</div>
-                      <div className="text-white">ReloadE164PatternMaps inactive, will run again in 0 days 00:01:37</div>
+                      <div className="text-white">ReloadE164PatternMaps inactive, will run again in 0 days 00:14:09</div>
                     </div>
                   </div>
                   <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
