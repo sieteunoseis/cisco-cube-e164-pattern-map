@@ -169,15 +169,13 @@ const Home = () => {
 
   // Handle .cfg file download
   const handleDownloadCfg = (label) => {
-    const baseUrl = API_BASE_URL || window.location.origin;
-    const cfgUrl = `${baseUrl}/config-files/${label}.cfg`;
+    const cfgUrl = `${window.location.origin}/api/config-files/${label}.cfg`;
     window.open(cfgUrl, '_blank');
   };
 
   // Handle copying .cfg URL to clipboard
   const handleCopyLink = async (label) => {
-    const baseUrl = API_BASE_URL || window.location.origin;
-    const cfgUrl = `${baseUrl}/config-files/${label}.cfg`;
+    const cfgUrl = `${window.location.origin}/api/config-files/${label}.cfg`;
     try {
       await navigator.clipboard.writeText(cfgUrl);
       toast({
