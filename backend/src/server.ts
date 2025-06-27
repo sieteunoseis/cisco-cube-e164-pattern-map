@@ -64,6 +64,11 @@ app.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// API Health check endpoint (for proxy testing)
+app.get('/api/health', (req: Request, res: Response) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString(), endpoint: 'api' });
+});
+
 // Root endpoint - redirect to frontend
 app.get('/', (req: Request, res: Response) => {
   const frontendUrl = process.env.NODE_ENV === 'production' 
