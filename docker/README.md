@@ -7,10 +7,10 @@ This folder contains Docker Compose configuration for testing the application wi
 ### Download Docker Compose File
 ```bash
 # Download docker-compose.yml directly from GitHub
-wget https://raw.githubusercontent.com/sieteunoseis/react-express-tailwind-app/main/docker/docker-compose.yml
+wget https://raw.githubusercontent.com/sieteunoseis/cisco-cube-e164-pattern-map/main/docker/docker-compose.yml
 
 # Or download entire docker folder
-wget -r --no-parent --reject="index.html*" https://raw.githubusercontent.com/sieteunoseis/react-express-tailwind-app/main/docker/
+wget -r --no-parent --reject="index.html*" https://raw.githubusercontent.com/sieteunoseis/cisco-cube-e164-pattern-map/main/docker/
 ```
 
 ### Run Application
@@ -36,13 +36,13 @@ cp .env.example .env
 
 ### Available Images
 The compose file pulls images from GitHub Container Registry:
-- `ghcr.io/sieteunoseis/react-express-tailwind-app/frontend:latest`
-- `ghcr.io/sieteunoseis/react-express-tailwind-app/backend:latest`
+- `ghcr.io/sieteunoseis/cisco-cube-e164-pattern-map/frontend:latest`
+- `ghcr.io/sieteunoseis/cisco-cube-e164-pattern-map/backend:latest`
 
 ### Port Configuration
 - **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:3000/api (or custom PORT)
-- **Health Check**: http://localhost:3000/health
+- **Backend API**: http://localhost:3001 (or custom PORT)
+- **Health Check**: http://localhost:3001/health
 
 ## Testing Different Versions
 
@@ -51,9 +51,9 @@ To test specific versions, update the docker-compose.yml image tags:
 ```yaml
 services:
   frontend:
-    image: ghcr.io/sieteunoseis/react-express-tailwind-app/frontend:v1.1.0
+    image: ghcr.io/sieteunoseis/cisco-cube-e164-pattern-map/frontend:v1.1.0
   backend:
-    image: ghcr.io/sieteunoseis/react-express-tailwind-app/backend:v1.1.0
+    image: ghcr.io/sieteunoseis/cisco-cube-e164-pattern-map/backend:v1.1.0
 ```
 
 ## Data Persistence
@@ -72,8 +72,8 @@ Pre-built images support both AMD64 and ARM64 architectures. If you encounter is
 
 ```bash
 # Clone the repository
-git clone https://github.com/sieteunoseis/react-express-tailwind-app.git
-cd react-express-tailwind-app
+git clone https://github.com/sieteunoseis/cisco-cube-e164-pattern-map.git
+cd cisco-cube-e164-pattern-map
 
 # Create .env file (optional, has sensible defaults)
 cp .env.example .env
@@ -85,7 +85,7 @@ docker compose -f docker-compose.yaml up -d --build
 Or download just the build compose file:
 ```bash
 # Download the local build version
-wget https://raw.githubusercontent.com/sieteunoseis/react-express-tailwind-app/main/docker-compose.yaml
+wget https://raw.githubusercontent.com/sieteunoseis/cisco-cube-e164-pattern-map/main/docker-compose.yaml
 
 # Build and run
 docker compose -f docker-compose.yaml up -d --build
@@ -97,14 +97,14 @@ If images aren't available in GitHub Container Registry yet:
 # Build images locally first
 cd ..
 docker compose build
-docker tag react-express-tailwind-app_frontend ghcr.io/sieteunoseis/react-express-tailwind-app/frontend:latest
-docker tag react-express-tailwind-app_backend ghcr.io/sieteunoseis/react-express-tailwind-app/backend:latest
+docker tag cisco-cube-e164-pattern-map_frontend ghcr.io/sieteunoseis/cisco-cube-e164-pattern-map/frontend:latest
+docker tag cisco-cube-e164-pattern-map_backend ghcr.io/sieteunoseis/cisco-cube-e164-pattern-map/backend:latest
 ```
 
 ### Health Check Failures
 ```bash
 # Check backend health
-curl http://localhost:3000/health
+curl http://localhost:3001/health
 
 # Check backend logs
 docker compose logs backend
@@ -113,11 +113,11 @@ docker compose logs backend
 ### Container Communication Issues
 ```bash
 # Test internal network connectivity
-docker compose exec react-frontend ping react-backend
-docker compose exec react-frontend curl http://backend:3000/health
+docker compose exec cisco-cube-frontend ping cisco-cube-backend
+docker compose exec cisco-cube-frontend curl http://backend:3001/health
 
 # If using different container names, override the backend host
-BACKEND_HOST=react-backend docker compose up -d
+BACKEND_HOST=cisco-cube-backend docker compose up -d
 ```
 
 ## Development vs Testing
