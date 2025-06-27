@@ -163,16 +163,17 @@ export default function Component() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleCopyCommand(`kron occurrence ReloadE164PatternMaps in 15\n!\n\nkron policy-list ReloadE164PatternMaps\n cli voice class e164-pattern-map load ${patternMapNumber}\n!`)}
+                        onClick={() => handleCopyCommand(`!\nkron occurrence ReloadE164PatternMaps in 15 recurring\n policy-list ReloadE164PatternMaps\n!\nkron policy-list ReloadE164PatternMaps\n cli voice class e164-pattern-map load ${patternMapNumber}\n!`)}
                         className="absolute top-2 right-2 h-6 w-6 p-0 hover:bg-slate-700 text-gray-400 hover:text-white"
                         title="Copy command"
                       >
                         <Copy className="h-3 w-3" />
                       </Button>
                       <div className="text-gray-400"># Schedule automatic reload every 15 minutes</div>
-                      <div>kron occurrence ReloadE164PatternMaps in <span className="text-yellow-400">15</span></div>
                       <div>!</div>
-                      <br />
+                      <div>kron occurrence ReloadE164PatternMaps in <span className="text-yellow-400">15</span> recurring</div>
+                      <div> policy-list ReloadE164PatternMaps</div>
+                      <div>!</div>
                       <div>kron policy-list ReloadE164PatternMaps</div>
                       <div> cli voice class e164-pattern-map load <span className="text-yellow-400">{patternMapNumber}</span></div>
                       <div>!</div>
