@@ -71,23 +71,22 @@ fi
 
 print_status "Containers are running"
 
-# Get the backend port
-PORT=$(grep "^PORT=" .env 2>/dev/null | cut -d'=' -f2 || echo "3000")
-
-# Test backend health endpoint
-print_status "Testing backend health endpoint..."
+# Test backend health endpoint through frontend proxy
+print_status "Testing backend health endpoint via proxy..."
 sleep 5  # Give backend more time to start
 
-if curl -f "http://localhost:$PORT/health" > /dev/null 2>&1; then
-    print_status "Backend health check passed"
+if curl -f "http://localhost:3000/api/health" > /dev/null 2>&1; then
+    print_status "Backend health check passed (via proxy)"
 else
-    print_warning "Backend health check failed, checking if service is responding..."
-    if curl -f "http://localhost:$PORT/api/data" > /dev/null 2>&1; then
-        print_status "Backend API is responding"
+    print_warning "Backend health check failed, checking if API is responding..."
+    if curl -f "http://localhost:3000/api/data" > /dev/null 2>&1; then
+        print_status "Backend API is responding (via proxy)"
     else
-        print_error "Backend is not responding"
+        print_error "Backend is not responding via proxy"
         echo "Backend logs:"
         docker compose -f $COMPOSE_FILE logs backend
+        echo "Frontend logs:"
+        docker compose -f $COMPOSE_FILE logs frontend
         exit 1
     fi
 fi
@@ -103,12 +102,12 @@ else
     exit 1
 fi
 
-# Test API endpoint
-print_status "Testing API endpoint..."
-if curl -f "http://localhost:$PORT/api/data" > /dev/null 2>&1; then
-    print_status "API endpoint is responding"
+# Test API endpoint via proxy
+print_status "Testing API endpoint via proxy..."
+if curl -f "http://localhost:3000/api/data" > /dev/null 2>&1; then
+    print_status "API endpoint is responding (via proxy)"
 else
-    print_error "API endpoint is not responding"
+    print_error "API endpoint is not responding via proxy"
     exit 1
 fi
 
@@ -117,8 +116,8 @@ print_status "All tests passed! 🎉"
 echo ""
 echo "Services are running:"
 echo "  Frontend: http://localhost:3000"
-echo "  Backend:  http://localhost:$PORT"
-echo "  API:      http://localhost:$PORT/api"
+echo "  API:      http://localhost:3000/api (proxied to backend)"
+echo "  Config:   http://localhost:3000/api/config-files/"
 echo ""
 echo "To stop services: docker compose -f $COMPOSE_FILE down"
 echo "To view logs:     docker compose -f $COMPOSE_FILE logs -f"
