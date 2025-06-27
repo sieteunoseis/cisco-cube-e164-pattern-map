@@ -37,8 +37,14 @@ docker-compose.yml
 coverage
 *.tgz
 
-# README.md
-README.md
+# Documentation and images
+*.md
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+screenshots/
 
 # Client folder
 backend
