@@ -1,4 +1,4 @@
-name = "cisco-cube-e164-pattern-map"
+name = "e164"
 compatibility_date = "2025-06-28"
 main = "src/worker.ts"
 
