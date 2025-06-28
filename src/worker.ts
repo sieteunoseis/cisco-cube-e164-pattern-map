@@ -1,7 +1,6 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
-import { serveStatic } from 'hono/cloudflare-workers';
 
 // Types for Cloudflare Worker environment
 export interface Env {
@@ -14,13 +13,8 @@ export interface Env {
 // Connection record type
 interface ConnectionRecord {
   id?: number;
-  name: string;
-  hostname: string;
-  username: string;
-  password: string;
-  version: string;
-  label?: string;
-  pattern?: string;
+  label: string;
+  pattern: string;
   description?: string;
   created_at?: string;
   updated_at?: string;
@@ -30,17 +24,28 @@ interface ConnectionRecord {
 function validatePatternData(data: any): { isValid: boolean; errors?: string[] } {
   const errors: string[] = [];
   
-  if (!data.name || typeof data.name !== 'string' || data.name.length === 0) {
-    errors.push('Name is required and must be a non-empty string');
+  // Validate label (required) - can be comma-separated
+  if (!data.label || typeof data.label !== 'string') {
+    errors.push('Label is required and must be a string');
+  } else {
+    // Split by comma and validate each label
+    const labels = data.label.split(',').map((label: string) => label.trim()).filter(Boolean);
+    if (labels.length === 0) {
+      errors.push('At least one label is required');
+    } else {
+      const invalidLabels = labels.filter((label: string) => !/^[a-z0-9_-]+$/.test(label));
+      if (invalidLabels.length > 0) {
+        errors.push(`Invalid label format for: ${invalidLabels.join(', ')}. Each label must be lowercase alphanumeric with hyphens or underscores only`);
+      }
+    }
   }
-  
-  if (!data.hostname || typeof data.hostname !== 'string' || data.hostname.length === 0) {
-    errors.push('Hostname is required and must be a non-empty string');
+
+  // Validate pattern (required)
+  if (!data.pattern || typeof data.pattern !== 'string') {
+    errors.push('Pattern is required and must be a string');
   }
-  
-  if (!data.username || typeof data.username !== 'string' || data.username.length === 0) {
-    errors.push('Username is required and must be a non-empty string');
-  }
+
+  // Description is optional - no validation needed
   
   return {
     isValid: errors.length === 0,
@@ -60,14 +65,9 @@ function sanitizePatternData(data: any): ConnectionRecord {
   };
   
   return {
-    name: escapeHtml(data.name || ''),
-    hostname: escapeHtml(data.hostname || ''),
-    username: escapeHtml(data.username || ''),
-    password: escapeHtml(data.password || ''),
-    version: escapeHtml(data.version || ''),
-    label: data.label ? escapeHtml(data.label) : undefined,
-    pattern: data.pattern ? escapeHtml(data.pattern) : undefined,
-    description: data.description ? escapeHtml(data.description) : undefined
+    label: data.label ? escapeHtml(data.label) : '',
+    pattern: data.pattern ? escapeHtml(data.pattern) : '',
+    description: data.description ? escapeHtml(data.description) : ''
   };
 }
 
@@ -81,8 +81,6 @@ app.use('*', cors({
   allowHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Serve static files from frontend build
-app.use('/*', serveStatic({ root: './' }));
 
 // Health check endpoints
 app.get('/health', (c) => {
@@ -93,100 +91,89 @@ app.get('/api/health', (c) => {
   return c.json({ status: 'ok', timestamp: new Date().toISOString(), endpoint: 'api' });
 });
 
-// Initialize database tables
+// Initialize database tables (tables already exist, just ensure they're accessible)
 async function initializeDatabase(db: D1Database) {
-  // Create patterns table
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS patterns (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      hostname TEXT NOT NULL,
-      username TEXT NOT NULL,
-      password TEXT NOT NULL,
-      version TEXT DEFAULT '',
-      label TEXT,
-      pattern TEXT,
-      description TEXT,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-  
-  // Create download logs table
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS download_logs (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      label TEXT NOT NULL,
-      ip_address TEXT,
-      user_agent TEXT,
-      status_code INTEGER,
-      downloaded_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
+  try {
+    // Tables already exist, this is just a connectivity check
+    await db.prepare('SELECT 1').first();
+  } catch (error) {
+    console.error('Database connectivity error:', error);
+    throw error;
+  }
 }
 
 // Get all patterns or specific pattern by ID
 app.get('/api/data', async (c) => {
-  const db = c.env.DB;
-  await initializeDatabase(db);
-  
-  const id = c.req.query('id');
-  
-  if (id) {
-    const patternId = parseInt(id);
-    if (isNaN(patternId)) {
-      return c.json({ error: 'Invalid ID parameter' }, 400);
-    }
+  try {
+    const db = c.env.DB;
+    await initializeDatabase(db);
     
-    const pattern = await db.prepare('SELECT * FROM patterns WHERE id = ?').bind(patternId).first();
-    if (!pattern) {
-      return c.json({ error: 'Pattern not found' }, 404);
-    }
+    const id = c.req.query('id');
     
-    return c.json(pattern);
-  } else {
-    const patterns = await db.prepare('SELECT * FROM patterns ORDER BY created_at DESC').all();
-    return c.json(patterns.results);
+    if (id) {
+      const patternId = parseInt(id);
+      if (isNaN(patternId)) {
+        return c.json({ error: 'Invalid ID parameter' }, 400);
+      }
+      
+      const pattern = await db.prepare('SELECT * FROM patterns WHERE id = ?').bind(patternId).first();
+      if (!pattern) {
+        return c.json({ error: 'Pattern not found' }, 404);
+      }
+      
+      return c.json(pattern);
+    } else {
+      const patterns = await db.prepare('SELECT * FROM patterns ORDER BY created_at DESC').all();
+      return c.json(patterns.results);
+    }
+  } catch (error) {
+    console.error('GET /api/data error:', error);
+    return c.json({ error: 'Internal server error', details: error.message }, 500);
   }
 });
 
 // Create new pattern
 app.post('/api/data', async (c) => {
-  const db = c.env.DB;
-  await initializeDatabase(db);
-  
-  const body = await c.req.json();
-  
-  // Validate input data
-  const validation = validatePatternData(body);
-  if (!validation.isValid) {
+  try {
+    const db = c.env.DB;
+    await initializeDatabase(db);
+    
+    const body = await c.req.json();
+    
+    // Validate input data
+    const validation = validatePatternData(body);
+    if (!validation.isValid) {
+      return c.json({ 
+        error: 'Validation failed', 
+        details: validation.errors 
+      }, 400);
+    }
+    
+    // Sanitize input data
+    const sanitizedData = sanitizePatternData(body);
+    
+    const result = await db.prepare(`
+      INSERT INTO patterns (name, hostname, username, password, version, label, pattern, description)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      'placeholder',
+      'placeholder', 
+      'placeholder',
+      'placeholder',
+      '',
+      sanitizedData.label,
+      sanitizedData.pattern,
+      sanitizedData.description || null
+    ).run();
+    
     return c.json({ 
-      error: 'Validation failed', 
-      details: validation.errors 
-    }, 400);
+      id: result.meta.last_row_id,
+      message: 'Pattern created successfully' 
+    }, 201);
+  } catch (error) {
+    console.error('POST /api/data error:', error);
+    return c.json({ error: 'Internal server error', details: error.message }, 500);
   }
-  
-  // Sanitize input data
-  const sanitizedData = sanitizePatternData(body);
-  
-  const result = await db.prepare(`
-    INSERT INTO patterns (name, hostname, username, password, version, label, pattern, description)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-  `).bind(
-    sanitizedData.name,
-    sanitizedData.hostname,
-    sanitizedData.username,
-    sanitizedData.password,
-    sanitizedData.version || '',
-    sanitizedData.label || null,
-    sanitizedData.pattern || null,
-    sanitizedData.description || null
-  ).run();
-  
-  return c.json({ 
-    id: result.meta.last_row_id,
-    message: 'Pattern created successfully' 
-  }, 201);
 });
 
 // Update pattern by ID
@@ -221,17 +208,11 @@ app.put('/api/data/:id', async (c) => {
   
   await db.prepare(`
     UPDATE patterns 
-    SET name = ?, hostname = ?, username = ?, password = ?, version = ?, 
-        label = ?, pattern = ?, description = ?, updated_at = CURRENT_TIMESTAMP
+    SET label = ?, pattern = ?, description = ?, updated_at = CURRENT_TIMESTAMP
     WHERE id = ?
   `).bind(
-    sanitizedData.name,
-    sanitizedData.hostname,
-    sanitizedData.username,
-    sanitizedData.password,
-    sanitizedData.version || '',
-    sanitizedData.label || null,
-    sanitizedData.pattern || null,
+    sanitizedData.label,
+    sanitizedData.pattern,
     sanitizedData.description || null,
     id
   ).run();

@@ -177,17 +177,17 @@ const SavedPatterns = forwardRef(({ onPatternChange, showActions = true, title =
 
               return Object.entries(groupedPatterns).map(([label, labelPatterns], index) => (
                 <AccordionItem key={label} value={`item-${index}`} className="border rounded-lg mb-2">
-                  <div className="flex items-center justify-between px-4 py-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 py-3 gap-3">
                     <AccordionTrigger className="flex-1 hover:no-underline">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="secondary">{label}</Badge>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                        <Badge variant="secondary" className="self-start">{label}</Badge>
                         <span className="text-sm text-muted-foreground">
                           ({labelPatterns.length} pattern{labelPatterns.length !== 1 ? 's' : ''})
                         </span>
                       </div>
                     </AccordionTrigger>
                     {showActions && (
-                      <div className="flex gap-2 ml-4">
+                      <div className="flex gap-2 sm:ml-4 justify-end sm:justify-start flex-shrink-0">
                         <Button
                           variant="outline"
                           size="sm"
@@ -195,7 +195,7 @@ const SavedPatterns = forwardRef(({ onPatternChange, showActions = true, title =
                             e.stopPropagation();
                             handleDeleteLabel(label, labelPatterns);
                           }}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950 h-8 w-8 p-0 sm:h-auto sm:w-auto sm:p-2"
                           title={`Delete all patterns for ${label}`}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -207,7 +207,7 @@ const SavedPatterns = forwardRef(({ onPatternChange, showActions = true, title =
                             e.stopPropagation();
                             handleDownloadCfg(label);
                           }}
-                          className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-950"
+                          className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-950 h-8 w-8 p-0 sm:h-auto sm:w-auto sm:p-2"
                           title={`Download ${label}.cfg`}
                         >
                           <Download className="h-4 w-4" />
@@ -219,7 +219,7 @@ const SavedPatterns = forwardRef(({ onPatternChange, showActions = true, title =
                             e.stopPropagation();
                             handleCopyLink(label);
                           }}
-                          className="text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-950"
+                          className="text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-950 h-8 w-8 p-0 sm:h-auto sm:w-auto sm:p-2"
                           title={`Copy URL for Cisco IOS: voice class e164-pattern-map XXX url ...`}
                         >
                           <Link className="h-4 w-4" />

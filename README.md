@@ -2,6 +2,8 @@
 
 A specialized React application for managing Cisco CUBE E164 pattern mappings with dynamic pattern generation and configuration file serving. Built with TypeScript, Express.js backend, and SQLite database for enterprise voice routing management.
 
+🌐 **[Live Demo](https://cisco-cube-e164-pattern-map.automate-builders.workers.dev/)** - Try the application now!
+
 ## ✨ Features
 
 - **📞 E164 Pattern Management**: Create, edit, and organize Cisco CUBE E164 patterns with label-based grouping
