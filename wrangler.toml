@@ -10,7 +10,7 @@ VITE_BRANDING_NAME = "Cisco Cube E164 Pattern Map"
 [[d1_databases]]
 binding = "DB"
 database_name = "cisco-patterns"
-database_id = "placeholder-database-id"
+database_id = "b990067e-a165-444b-abc6-3c6351bad0aa"
 
 [assets]
 directory = "./frontend/dist"
