@@ -1,0 +1,16 @@
+name = "cisco-cube-e164-pattern-map"
+compatibility_date = "2025-06-28"
+main = "src/worker.ts"
+
+[vars]
+NODE_ENV = "production"
+VITE_TABLE_COLUMNS = "name,hostname,username,version"
+VITE_BRANDING_NAME = "Cisco Cube E164 Pattern Map"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cisco-patterns"
+database_id = "placeholder-database-id"
+
+[assets]
+directory = "./frontend/dist"
