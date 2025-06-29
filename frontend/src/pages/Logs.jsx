@@ -116,11 +116,11 @@ export default function Logs() {
                     className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                   >
                     <div className="flex items-center space-x-4">
-                      {getDownloadIcon(log.status)}
+                      {getDownloadIcon(log.status_code)}
                       <div>
                         <div className="flex items-center space-x-2">
                           <span className="font-medium">{log.label}.cfg</span>
-                          {getStatusBadge(log.status)}
+                          {getStatusBadge(log.status_code)}
                         </div>
                         <div className="flex items-center space-x-4 text-sm text-muted-foreground mt-1">
                           <div className="flex items-center">
@@ -129,7 +129,7 @@ export default function Logs() {
                           </div>
                           <div className="flex items-center">
                             <Clock className="h-3 w-3 mr-1" />
-                            {formatTimestamp(log.timestamp)}
+                            {formatTimestamp(log.downloaded_at)}
                           </div>
                         </div>
                       </div>

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Home, Code, FileText, Calculator, Copy, Activity, Menu, X } from "lucide-react";
+import { Home, Code, FileText, Calculator, Copy, Activity, Menu, X, Link2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 
@@ -56,6 +56,13 @@ export default function Component() {
               <Link to="/logs" className="flex items-center gap-2 hover:text-blue-600 transition-colors text-sm font-medium">
                 <Activity className="h-4 w-4" />
                 Download Logs
+              </Link>
+            </NavigationMenuLink>
+            
+            <NavigationMenuLink asChild>
+              <Link to="/url-builder" className="flex items-center gap-2 hover:text-blue-600 transition-colors text-sm font-medium">
+                <Link2 className="h-4 w-4" />
+                URL Builder
               </Link>
             </NavigationMenuLink>
             
@@ -301,6 +308,15 @@ export default function Component() {
             >
               <Activity className="h-4 w-4" />
               Download Logs
+            </Link>
+            
+            <Link 
+              to="/url-builder" 
+              className="flex items-center gap-2 hover:text-blue-600 transition-colors text-sm font-medium py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Link2 className="h-4 w-4" />
+              URL Builder
             </Link>
             
             <Dialog>
