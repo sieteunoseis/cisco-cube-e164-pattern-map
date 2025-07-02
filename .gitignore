@@ -18,3 +18,5 @@ scripts/
 
 # Wrangler/Cloudflare local state and cache
 .wrangler/
+
+/net-commander
