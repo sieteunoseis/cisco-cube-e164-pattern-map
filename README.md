@@ -379,6 +379,10 @@ To use a different backend port:
 
 The frontend will automatically proxy to the new port via Vite configuration.
 
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 ---
 
 **Template Reference**: Script based on [Propagating Git Template Changes](https://www.mslinn.com/git/700-propagating-git-template-changes.html)
