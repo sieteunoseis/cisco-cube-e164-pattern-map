@@ -36,7 +36,7 @@ export default function Component() {
         <h1 className="scroll-m-20 text-xl font-extrabold tracking-tight sm:text-2xl lg:text-3xl xl:text-4xl truncate max-w-[200px] sm:max-w-none">{ config.brandingName ? config.brandingName : 'Automate Builders' }</h1>
         </Link>
         {/* Desktop Navigation */}
-        <NavigationMenu className="hidden md:block">
+        <NavigationMenu className="hidden xl:block">
           <NavigationMenuList className="flex items-center gap-6">
             <NavigationMenuLink asChild>
               <Link to="/" className="flex items-center gap-2 hover:text-blue-600 transition-colors text-sm font-medium">
@@ -272,7 +272,7 @@ export default function Component() {
         <Button
           variant="ghost"
           size="sm"
-          className="md:hidden"
+          className="xl:hidden"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
           {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -281,7 +281,7 @@ export default function Component() {
       
       {/* Mobile Navigation Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white dark:bg-black border-t border-gray-200 dark:border-gray-700">
+        <div className="xl:hidden bg-white dark:bg-black border-t border-gray-200 dark:border-gray-700">
           <div className="px-4 py-2 space-y-2">
             <Link 
               to="/" 
